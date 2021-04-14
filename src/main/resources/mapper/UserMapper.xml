@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.vince.demo.user.mapper.UserMapper">
+    <resultMap id="BaseResultMap" type="com.vince.demo.user.entity.User">
+        <result column="username" jdbcType="VARCHAR" property="username"/>
+        <result column="password" jdbcType="INTEGER" property="password"/>
+        <result column="phone" jdbcType="VARCHAR" property="phone"/>
+    </resultMap>
+    <insert id="addUserInfo" parameterType="com.vince.demo.user.entity.User">
+        INSERT INTO customer
+        VALUES (#{username}, #{password}, null)
+    </insert>
+
+    <insert id="addUser" parameterType="com.vince.demo.user.entity.User">
+        INSERT INTO customer
+        VALUES (#{username}, #{password}, #{phone})
+    </insert>
+    <select id="queryByUserName" resultType="com.vince.demo.user.entity.User">
+        SELECT *
+        FROM customer
+        WHERE username = #{username}
+    </select>
+</mapper>

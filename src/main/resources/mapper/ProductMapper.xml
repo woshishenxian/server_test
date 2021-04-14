@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.vince.demo.product.mapper.ProductMapper">
+    <resultMap id="BaseResultMap" type="com.vince.demo.product.entity.Product">
+        <result column="product_id" jdbcType="VARCHAR" property="productId"/>
+        <result column="product_name" jdbcType="VARCHAR" property="productName"/>
+        <result column="product_price" jdbcType="DOUBLE" property="productPrice"/>
+        <result column="product_type" jdbcType="INTEGER" property="productType"/>
+        <result column="product_img" jdbcType="VARCHAR" property="productImg"/>
+        <result column="product_des" jdbcType="VARCHAR" property="productDes"/>
+    </resultMap>
+    <insert id="addProduct" parameterType="com.vince.demo.product.entity.Product">
+        INSERT INTO product(`product_name`, `product_price`, `product_type`, `product_img`, `product_des`)
+        VALUES (#{productName}, #{productPrice}, #{productType}, #{productImg}, #{productDes})
+    </insert>
+    <select id="getProductList" resultMap="BaseResultMap">
+        SELECT *
+        FROM product
+    </select>
+    <!-- 模糊搜索 -->
+    <select id="getProductByKey" resultMap="BaseResultMap">
+        SELECT *
+        FROM product
+        where product_name like concat('%', #{productName}, '%')
+           or product_des like concat('%', #{productName}, '%')
+    </select>
+    <!-- 模糊搜索 -->
+    <select id="getProductByCondition" resultMap="BaseResultMap">
+        select *
+        from product
+        <where>
+            <if test="productname !=null and productName !=''">
+                and product_name like concat('%', #{productName}, '%')
+            </if>
+            <if test="productType != null and productType != -1">
+                and product_type = #{productType}
+            </if>
+        </where>
+    </select>
+    <update id="updateProduct" parameterType="com.vince.demo.product.entity.Product">
+        update product
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="null != pro.productName and '' != pro.productName">
+                product_name=#{pro.productName},
+            </if>
+            <if test="null != pro.productType and -1!= pro.productType">
+                product_type=#{pro.productType},
+            </if>
+            <if test="null != pro.productPrice and -1!= pro.productPrice">
+                product_price=#{pro.productPrice},
+            </if>
+            <if test="null != pro.productImg and '' != pro.productImg">
+                product_img=#{pro.productImg},
+            </if>
+            <if test="null != pro.productDes and '' != pro.productDes">
+                product_des=#{pro.productDes},
+            </if>
+        </trim>
+        where product_id=#{pro.productId}
+    </update>
+
+    <delete id="deleteProduct">
+        delete
+        from product
+        where product_id = #{productId}
+    </delete>
+    <select id="getProductDetailById" resultMap="BaseResultMap">
+        select *
+        from product
+        where product_id = #{productId} limit 1;
+    </select>
+
+    <select id="statisticProductNum" resultMap="BaseResultMap">
+        select product_type, count(1) productNum
+        from product
+        group by product_type
+    </select>
+
+    <select id="getProductPageList" resultMap="BaseResultMap">
+        select * from product
+    </select>
+</mapper>
+
